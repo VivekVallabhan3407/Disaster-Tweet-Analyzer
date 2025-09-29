@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import re
 import spacy
+nlp_ner = spacy.load("en_core_web_sm")
 from transformers import pipeline, DistilBertTokenizerFast, DistilBertForSequenceClassification
 import torch
 import matplotlib.pyplot as plt
