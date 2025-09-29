@@ -12,3 +12,4 @@ streamlit
 streamlit-folium
 geopy
 en-core-web-sm
+python -m spacy download en_core_web_sm
