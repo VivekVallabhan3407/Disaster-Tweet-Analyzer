@@ -11,3 +11,4 @@ folium
 streamlit
 streamlit-folium
 geopy
+en-core-web-sm
