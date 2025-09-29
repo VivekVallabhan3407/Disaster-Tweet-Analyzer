@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import folium
 from streamlit_folium import folium_static
-from dotenv import load_dotenv
 import os
 
 
@@ -20,9 +19,9 @@ DATA_PATH = 'Data/'
 
 # Hugging Face Hub IDs
 # Load environment variables
-load_dotenv()
 
-HF_USER = os.getenv("HF_USER_NAME")
+
+HF_USER = "Vivek1564"
 BIN_REPO_ID = f"{HF_USER}/disaster-tweet-binary-filter"
 MULTI_REPO_ID = f"{HF_USER}/disaster-tweet-multi-category-finetuned"
 
