@@ -9,13 +9,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import folium
 from streamlit_folium import folium_static
+from dotenv import load_dotenv
+import os
+
+
 from geopy.geocoders import Nominatim
 
 # --- CONFIGURATION & CACHING ---
 DATA_PATH = 'Data/'
 
 # Hugging Face Hub IDs
-HF_USER = "Vivek1564"
+# Load environment variables
+load_dotenv()
+
+HF_USER = os.getenv("HF_USER_NAME")
 BIN_REPO_ID = f"{HF_USER}/disaster-tweet-binary-filter"
 MULTI_REPO_ID = f"{HF_USER}/disaster-tweet-multi-category-finetuned"
 
