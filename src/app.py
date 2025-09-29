@@ -12,8 +12,12 @@ from streamlit_folium import folium_static
 from geopy.geocoders import Nominatim
 
 # --- CONFIGURATION & CACHING ---
-MODELS_DIR = 'Models/'
 DATA_PATH = 'Data/'
+
+# Hugging Face Hub IDs
+HF_USER = "Vivek1564"
+BIN_REPO_ID = f"{HF_USER}/disaster-tweet-binary-filter"
+MULTI_REPO_ID = f"{HF_USER}/disaster-tweet-multi-category-finetuned"
 
 # Label Mappings
 LABEL_LIST = sorted([
@@ -26,7 +30,7 @@ LABEL_LIST = sorted([
 ])
 ID_TO_LABEL = {i: label for i, label in enumerate(LABEL_LIST)}
 
-# Disaster type keyword mapping
+# Disaster type keywords
 DISASTER_TYPE_MAP = {
     'flood': ['flood', 'flooding', 'rain', 'dam', 'inundation', 'tsunami'],
     'earthquake': ['quake', 'earthquake', 'shaking', 'seismic', 'magnitude'],
@@ -51,11 +55,12 @@ SENTIMENT_MAP = {
 # --- A. Load Models & Tools ---
 @st.cache_resource
 def load_all_resources():
-    tokenizer_bin = DistilBertTokenizerFast.from_pretrained(MODELS_DIR + 'distilbert_binary_classification_saved_model')
-    model_bin = DistilBertForSequenceClassification.from_pretrained(MODELS_DIR + 'distilbert_binary_classification_saved_model')
+    # Load from Hugging Face Hub
+    tokenizer_bin = DistilBertTokenizerFast.from_pretrained(BIN_REPO_ID)
+    model_bin = DistilBertForSequenceClassification.from_pretrained(BIN_REPO_ID)
 
-    tokenizer_multi = DistilBertTokenizerFast.from_pretrained(MODELS_DIR + 'distilbert_multi_category_model_finetuned')
-    model_multi = DistilBertForSequenceClassification.from_pretrained(MODELS_DIR + 'distilbert_multi_category_model_finetuned')
+    tokenizer_multi = DistilBertTokenizerFast.from_pretrained(MULTI_REPO_ID)
+    model_multi = DistilBertForSequenceClassification.from_pretrained(MULTI_REPO_ID)
 
     nlp_ner = spacy.load("en_core_web_sm")
     sentiment_pipeline = pipeline(
@@ -101,6 +106,7 @@ def load_dashboard_data():
 def run_prediction_pipeline(raw_tweet):
     cleaned_bert = clean_text_for_bert(raw_tweet)
 
+    # Binary classification
     inputs = tokenizer_bin(cleaned_bert, return_tensors="pt", truncation=True, padding=True)
     with torch.no_grad():
         binary_pred_raw = model_bin(**inputs).logits
@@ -111,16 +117,19 @@ def run_prediction_pipeline(raw_tweet):
 
     results = {"is_disaster": True}
 
+    # Multi-class prediction
     inputs_multi = tokenizer_multi(cleaned_bert, return_tensors="pt", truncation=True, padding=True)
     with torch.no_grad():
         logits_multi = model_multi(**inputs_multi).logits
     multi_pred_id = logits_multi.argmax(dim=1).item()
     results["purpose"] = ID_TO_LABEL.get(multi_pred_id, "CLASSIFICATION ERROR")
 
+    # Named entity recognition for location
     doc = nlp_ner(raw_tweet)
     locations = [ent.text for ent in doc.ents if ent.label_ in ['GPE', 'LOC', 'FAC']]
     results["location"] = locations[0] if locations else "N/A"
 
+    # Geocoding
     geolocator = Nominatim(user_agent="disaster-tweet-analyzer-app")
     lat_lon = None
     if results["location"] != "N/A":
@@ -130,10 +139,10 @@ def run_prediction_pipeline(raw_tweet):
                 lat_lon = (location.latitude, location.longitude)
         except:
             pass
-
     results["coords"] = lat_lon if lat_lon else DEFAULT_MAP_CENTER
     results["type"] = infer_disaster_type(cleaned_bert)
 
+    # Sentiment
     sentiment_result = sentiment_pipeline(raw_tweet)[0]
     mapped_label = SENTIMENT_MAP.get(sentiment_result['label'], sentiment_result['label'])
     results["sentiment"] = f"{mapped_label} ({sentiment_result['score']:.2f})"
@@ -166,50 +175,48 @@ def dashboard_page(df_dashboard):
         st.error("Dashboard Data Not Available.")
         return
 
-    # --- Metrics Row ---
+    # Metrics
     disaster_count = df_dashboard['is_disaster_pred'].sum()
     non_disaster_count = len(df_dashboard) - disaster_count
-
     col1, col2, col3 = st.columns(3)
     col1.metric("🌪️ Confirmed Alerts", f"{disaster_count}", delta_color="off")
     col2.metric("🚫 Filtered Non-Disaster", f"{non_disaster_count}", delta_color="off")
     col3.metric("📈 Binary Model F1-Score", "0.89", delta_color="off")
-
     st.markdown("---")
 
-    # --- Charts Row ---
+    # Charts
     df_action = df_dashboard[df_dashboard['is_disaster_pred'] == 1].copy()
-    
-    # Bar Chart: Humanitarian Action Breakdown
+
+    # Humanitarian Action Breakdown
     if 'purpose_pred' in df_action.columns:
         purpose_counts = df_action['purpose_pred'].value_counts()
         purpose_counts = purpose_counts[~purpose_counts.index.isin(["NOT APPLICABLE", "don't know", "sympathy_and_support"])]
-        fig, ax = plt.subplots(figsize=(20,12))
+        fig, ax = plt.subplots(figsize=(22,14))
         sns.barplot(x=purpose_counts.values, y=purpose_counts.index, palette="Set2", ax=ax)
-        ax.set_title("Humanitarian Action Breakdown", fontsize=22, weight='bold')
-        ax.set_xlabel("Number of Tweets", fontsize=18)
-        ax.set_ylabel("Action Category", fontsize=18)
-        ax.tick_params(axis='x', labelsize=14)
-        ax.tick_params(axis='y', labelsize=14)
+        ax.set_title("Humanitarian Action Breakdown", fontsize=24, weight='bold')
+        ax.set_xlabel("Number of Tweets", fontsize=20)
+        ax.set_ylabel("Action Category", fontsize=20)
+        ax.tick_params(axis='x', labelsize=16)
+        ax.tick_params(axis='y', labelsize=16)
         st.pyplot(fig)
 
     st.markdown("---")
 
-    # Bar Chart: Disaster Type Breakdown
+    # Disaster Type Breakdown
     if 'disaster_type_pred' in df_action.columns:
         type_counts = df_action['disaster_type_pred'].value_counts()
-        fig, ax = plt.subplots(figsize=(20,12))
+        fig, ax = plt.subplots(figsize=(22,14))
         sns.barplot(x=type_counts.values, y=type_counts.index, palette="Set3", ax=ax)
-        ax.set_title("Disaster Type Breakdown", fontsize=22, weight='bold')
-        ax.set_xlabel("Number of Tweets", fontsize=18)
-        ax.set_ylabel("Disaster Type", fontsize=18)
-        ax.tick_params(axis='x', labelsize=14)
-        ax.tick_params(axis='y', labelsize=14)
+        ax.set_title("Disaster Type Breakdown", fontsize=24, weight='bold')
+        ax.set_xlabel("Number of Tweets", fontsize=20)
+        ax.set_ylabel("Disaster Type", fontsize=20)
+        ax.tick_params(axis='x', labelsize=16)
+        ax.tick_params(axis='y', labelsize=16)
         st.pyplot(fig)
 
     st.markdown("---")
 
-    # --- Live Tweet Analysis ---
+    # Live Tweet Analysis
     st.subheader("🔎 Live Tweet Analysis")
     tweet_input = st.text_area("Enter a tweet:", "URGENT: Earthquake in downtown Mumbai. Need police and medical teams now.", height=150)
 
@@ -221,7 +228,7 @@ def dashboard_page(df_dashboard):
         else:
             st.success("✅ Real Disaster Alert")
 
-            # Info Cards for results
+            # Info Cards
             card_col1, card_col2, card_col3, card_col4 = st.columns(4)
             card_col1.markdown(f"<div style='border:2px solid #ff4b4b;padding:20px;border-radius:10px;text-align:center;font-size:18px'><b>Action:</b><br>{results['purpose'].replace('_',' ').title()}</div>", unsafe_allow_html=True)
             card_col2.markdown(f"<div style='border:2px solid #ffa500;padding:20px;border-radius:10px;text-align:center;font-size:18px'><b>Type:</b><br>{results['type']}</div>", unsafe_allow_html=True)
