@@ -138,13 +138,27 @@ def run_prediction_pipeline(raw_tweet):
     # Geocoding
     geolocator = Nominatim(user_agent="disaster-tweet-analyzer-app")
     lat_lon = None
-    if results["location"] != "N/A":
+
+    # Fallback city coordinates (for demo stability)
+    CITY_COORDS = {
+        "Mumbai": (19.0760, 72.8777),
+        "Delhi": (28.7041, 77.1025),
+        "Bengaluru": (12.9716, 77.5946),
+        "Chennai": (13.0827, 80.2707),
+        "Kolkata": (22.5726, 88.3639),
+    }
+
+    if results["location"] in CITY_COORDS:
+        lat_lon = CITY_COORDS[results["location"]]
+    else:
         try:
-            location = geolocator.geocode(results["location"], timeout=5)
+            query = results["location"] + ", India" if results["location"] == "Mumbai" else results["location"]
+            location = geolocator.geocode(query, timeout=5)
             if location:
                 lat_lon = (location.latitude, location.longitude)
-        except:
-            pass
+        except Exception as e:
+            st.warning(f"Geocoding failed: {e}")
+
     results["coords"] = lat_lon if lat_lon else DEFAULT_MAP_CENTER
     results["type"] = infer_disaster_type(cleaned_bert)
 
