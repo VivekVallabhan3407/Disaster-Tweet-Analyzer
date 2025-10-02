@@ -141,12 +141,55 @@ def run_prediction_pipeline(raw_tweet):
 
     # Fallback city coordinates (for demo stability)
     CITY_COORDS = {
-        "Mumbai": (19.0760, 72.8777),
-        "Delhi": (28.7041, 77.1025),
-        "Bengaluru": (12.9716, 77.5946),
-        "Chennai": (13.0827, 80.2707),
-        "Kolkata": (22.5726, 88.3639),
-    }
+    # --- India ---
+    "Mumbai": (19.0760, 72.8777),
+    "Delhi": (28.7041, 77.1025),
+    "Bengaluru": (12.9716, 77.5946),
+    "Chennai": (13.0827, 80.2707),
+    "Kolkata": (22.5726, 88.3639),
+    "Ahmedabad": (23.0339, 72.5850),
+    "Jaipur": (26.9221, 75.7789),
+    "Lucknow": (26.8500, 80.9499),
+    "Hyderabad": (17.3871, 78.4917),
+    "Patna": (25.6127, 85.1589),
+    "Chandigarh": (30.7333, 76.7794),
+    "Bhopal": (23.2599, 77.4126),
+    "Pune": (18.5167, 73.8562),
+    "Indore": (22.7196, 75.8577),
+    "Nagpur": (21.1466, 79.0889),
+    "Surat": (21.1702, 72.8311),
+    "Vadodara": (22.3075, 73.1812),
+    "Visakhapatnam": (17.6869, 83.2185),
+    "Coimbatore": (11.0168, 76.9558),
+
+    # --- United States ---
+    "New York": (40.7128, -74.0060),
+    "Los Angeles": (34.0522, -118.2437),
+    "Chicago": (41.8781, -87.6298),
+    "Miami": (25.7617, -80.1918),
+    "Denver": (39.7392, -104.9903),
+
+    # --- United Kingdom ---
+    "London": (51.5074, -0.1278),
+    "Edinburgh": (55.9533, -3.1883),
+    "Cardiff": (51.5074, -3.1791),
+    "Belfast": (54.5973, -5.9301),
+
+    # --- Australia ---
+    "Sydney": (-33.8688, 151.2093),
+    "Melbourne": (-37.8136, 144.9631),
+    "Brisbane": (-27.4698, 153.0251),
+    "Perth": (-31.9505, 115.8605),
+    "Adelaide": (-34.9285, 138.6007),
+
+    # --- Other Global Cities ---
+    "Tokyo": (35.6762, 139.6503),
+    "Paris": (48.8566, 2.3522),
+    "Berlin": (52.5200, 13.4050),
+    "Cairo": (30.0444, 31.2357),
+    "Rio de Janeiro": (-22.9068, -43.1729)
+}
+
 
     if results["location"] in CITY_COORDS:
         lat_lon = CITY_COORDS[results["location"]]
