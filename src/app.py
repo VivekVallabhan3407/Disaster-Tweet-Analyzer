@@ -157,7 +157,7 @@ def run_prediction_pipeline(raw_tweet):
 
 # --- STREAMLIT UI PAGES ---
 def home_page():
-    st.title("🏡 Welcome to TweetGuardians")
+    st.title(" Welcome to TweetGuardians")
     st.markdown("---")
     st.markdown(
         """
@@ -169,12 +169,12 @@ def home_page():
         """, unsafe_allow_html=True
     )
     st.markdown("---")
-    if st.button("🚀 Go to Dashboard", type="primary"):
+    if st.button(" Go to Dashboard", type="primary"):
         st.session_state['page'] = 'Dashboard'
         st.rerun()
 
 def dashboard_page(df_dashboard):
-    st.title("📊 Disaster Dashboard & Live Analyzer")
+    st.title(" Disaster Dashboard & Live Analyzer")
     st.markdown("---")
 
     if df_dashboard.empty:
@@ -185,9 +185,9 @@ def dashboard_page(df_dashboard):
     disaster_count = df_dashboard['is_disaster_pred'].sum()
     non_disaster_count = len(df_dashboard) - disaster_count
     col1, col2, col3 = st.columns(3)
-    col1.metric("🌪️ Confirmed Alerts", f"{disaster_count}", delta_color="off")
-    col2.metric("🚫 Filtered Non-Disaster", f"{non_disaster_count}", delta_color="off")
-    col3.metric("📈 Binary Model F1-Score", "0.89", delta_color="off")
+    col1.metric(" Confirmed Alerts", f"{disaster_count}", delta_color="off")
+    col2.metric(" Filtered Non-Disaster", f"{non_disaster_count}", delta_color="off")
+    col3.metric(" Binary Model F1-Score", "0.89", delta_color="off")
     st.markdown("---")
 
     # Charts
@@ -223,7 +223,7 @@ def dashboard_page(df_dashboard):
     st.markdown("---")
 
     # Live Tweet Analysis
-    st.subheader("🔎 Live Tweet Analysis")
+    st.subheader(" Live Tweet Analysis")
     tweet_input = st.text_area("Enter a tweet:", "URGENT: Earthquake in downtown Mumbai. Need police and medical teams now.", height=150)
 
     if st.button("Analyze Tweet Live", type="primary"):
