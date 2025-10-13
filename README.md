@@ -1,47 +1,45 @@
-# Disaster Tweet Analyzer
+# 🌍 Disaster Tweet Analyzer
 
-## Project Summary
+## 🧩 Project Summary
+The **Disaster Tweet Analyzer** is an NLP-based system designed to assist in **real-time disaster management** using social media data.  
+It analyzes tweets to detect **disaster-related content**, extract **locations and entities**, determine **disaster type**, and assess the **urgency/sentiment** of the situation.  
+The project provides an **interactive web dashboard** for visualization and insights.
 
-The **Disaster Tweet Analyzer** is a natural language processing (NLP) project focused on leveraging social media data to assist in real-time disaster management. The primary objective is to swiftly detect crisis-related tweets, accurately extract critical information such as **locations** and **organizations**, and provide actionable insights into the urgency and sentiment of the event.
-
-The tool is designed for efficiency and is built to handle bulk CSV data processing as well as live input from Twitter streams.
+🔗 **Live Demo:** [Disaster Tweet Analyzer (Streamlit)](https://disaster-tweet-analyzer-yfwtkjjveunmtdqyfntzx6.streamlit.app/)
 
 ---
 
 ## 🚀 Key Features
-
-* **Disaster Classification:** High-accuracy binary classification (Disaster vs. Non-Disaster) for filtering noisy social data.
-* **Entity Extraction (NER):** Detects and extracts critical entities, including **locations** and **organizations**, vital for response coordination.
-* **Interactive Dashboard:** Provides a complete overview of the analysis, including statistics, charts, and a map visualization of extracted locations.
-* **Bulk & Live Processing:** Supports uploading large CSV datasets and handles real-time data input.
-* **Optional Sentiment Analysis:** (Planned/Future Feature) Provides a layer of urgency/sentiment analysis (e.g., positive, negative, neutral) to prioritize response efforts.
+1. **Interactive Web-Based Dashboard** (Streamlit / Flask)
+2. **Disaster Classification** — Binary (Yes/No) per tweet  
+3. **Disaster Type Identification** — via Named Entity Recognition (NER)  
+4. **Location Extraction** — identifies places mentioned in tweets  
+5. **Purpose & Sentiment/Urgency Analysis**  
+6. **Map-Based Visualization** — shows tweet distribution on a live map  
+7. **Deployment on Streamlit Cloud**
 
 ---
 
-## 🛠️ Technology Stack & Requirements
+## 🧠 Technology Stack & Requirements
 
-### Models and NLP Techniques
+### 🔍 Models and NLP Techniques
 
 | Category | Components | Notes |
 | :--- | :--- | :--- |
-| **Techniques** | Text Cleaning (URLs, Mentions, Punctuation), Tokenization, Stopword Removal, Lemmatization, Lowercasing. | Standard text preparation pipeline. |
-| **Baseline Models** | Logistic Regression, Naïve Bayes | Used for fast, interpretable baselines to measure complex model lift. |
-| **Core Models** | **BERT** (Fine-tuned for classification), **spaCy / HuggingFace NER** | Focus on achieving state-of-the-art accuracy and entity extraction precision. |
-| **Optional/Stretch** | Twitter-RoBERTa, DistilBERT SST-2 | For advanced sentiment and urgency analysis. |
+| **Text Preprocessing** | Tokenization, Lemmatization, Stopword Removal, Lowercasing, Cleaning | For consistent and clean input |
+| **Classification Models** | Logistic Regression, Naïve Bayes, BERT (fine-tuned) | Used for disaster detection |
+| **NER Models** | spaCy / HuggingFace NER | Extracts disaster type, locations, organizations |
+| **Sentiment Analysis** | DistilBERT / Twitter-RoBERTa (Optional) | Determines urgency or sentiment level |
+| **Model Storage** | Models are saved and hosted on **Hugging Face Hub** | Enables easy download and deployment |
 
-### Data Sources
+---
 
-The project utilizes publicly available, verified disaster-related tweet datasets:
+## 📚 Datasets Used
+1. **Kaggle:** [NLP Getting Started Dataset](https://www.kaggle.com/competitions/nlp-getting-started/data)  
+2. **CrisisNLP - HumAID Dataset (Multi-Class Humanitarian Labels):** [View Dataset](https://crisisnlp.qcri.org/humaid_dataset)  
+3. **CrisisNLP - Eyewitness Taxonomy (14k Tweets):** [View Dataset](https://crisisnlp.qcri.org/)
 
-* **Primary:** [Kaggle NLP Getting Started Competition Data](https://www.kaggle.com/competitions/nlp-getting-started/data)
-* **Secondary (Optional):** Selected datasets from the **CrisisNLP** corpus (e.g., specific earthquakes, floods, or hurricanes).
-
-### Deployment
-
-The final interactive application will be deployed using:
-
-* **Streamlit** for the web application interface.
-* **Streamlit Cloud** or **HuggingFace Spaces** for deployment.
+---
 
 ---
 
@@ -53,6 +51,14 @@ The final interactive application will be deployed using:
 4.  **Codebase (`src` folder):** Clean, modular, and fully documented Python code for all processing and modeling pipelines.
 
 ---
+
+
+## 📊 Applications
+1. **Disaster Management Agencies** → Identify and prioritize high-risk tweets in real time.  
+2. **NGOs & Relief Organizations** → Locate areas needing urgent support.  
+3. **News Media** → Monitor and report emerging disaster events.  
+4. **Research & Academia** → Study crisis informatics and benchmark NLP models.
+
 
 ## ▶️ Getting Started
 
@@ -78,3 +84,11 @@ The final interactive application will be deployed using:
     streamlit run src/app.py
     ```
     *(Assuming your main application file is named `app.py` inside a `src` folder.)*
+
+
+---
+
+## 🪪 License
+© 2025 Vivek Vallabhan. All Rights Reserved.  
+This project’s source code and design are proprietary and may not be copied or reproduced.  
+Datasets (CrisisNLP and Kaggle) belong to their respective owners and are used only for research and educational purposes.
