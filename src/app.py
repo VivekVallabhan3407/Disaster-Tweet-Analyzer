@@ -38,17 +38,53 @@ ID_TO_LABEL = {i: label for i, label in enumerate(LABEL_LIST)}
 
 # Disaster type keywords
 DISASTER_TYPE_MAP = {
-    'flood': ['flood', 'flooding', 'rain', 'dam', 'inundation', 'tsunami'],
-    'earthquake': ['quake', 'earthquake', 'shaking', 'seismic', 'magnitude'],
-    'fire': ['fire', 'wildfire', 'blaze', 'burning', 'smoke', 'inferno'],
-    'hurricane': ['hurricane', 'cyclone', 'storm', 'typhoon', 'gale'],
-    'volcano': ['volcano', 'eruption', 'lava', 'ash', 'pyroclastic'],
-    'landslide': ['landslide', 'mudslide', 'rockslide', 'avalanche'],
-    'pandemic': ['covid', 'pandemic', 'virus', 'disease', 'epidemic', 'outbreak'],
-    'tornado': ['tornado', 'twister', 'funnel cloud'],
-    'drought': ['drought', 'dry spell', 'heatwave', 'famine'],
-    'explosion': ['explosion', 'blast', 'bomb', 'detonation', 'attack']
+    'flood': [
+        'flood', 'flooding', 'rain', 'heavy rain', 'downpour', 'cloudburst',
+        'dam', 'overflow', 'waterlogging', 'tsunami', 'river burst', 'inundation',
+        'flash flood', 'monsoon', 'dam breach', 'levee break', 'storm surge'
+    ],
+    'earthquake': [
+        'quake', 'earthquake', 'tremor', 'aftershock', 'seismic', 'magnitude',
+        'epicenter', 'fault line', 'shaking', 'ground shaking', 'trembling',
+        'richter scale', 'plate movement'
+    ],
+    'fire': [
+        'fire', 'wildfire', 'blaze', 'burning', 'smoke', 'inferno', 'forest fire',
+        'bushfire', 'flames', 'spark', 'combustion', 'house fire', 'factory fire',
+        'fire broke out', 'smouldering'
+    ],
+    'hurricane': [
+        'hurricane', 'cyclone', 'storm', 'typhoon', 'gale', 'gust', 'landfall',
+        'tropical storm', 'severe storm', 'high winds', 'storm warning', 'eye of storm'
+    ],
+    'volcano': [
+        'volcano', 'eruption', 'lava', 'ash', 'pyroclastic', 'magma',
+        'crater', 'volcanic activity', 'ashfall', 'smoke plume', 'molten rock'
+    ],
+    'landslide': [
+        'landslide', 'mudslide', 'rockslide', 'avalanche', 'soil collapse',
+        'hill collapse', 'mountain slip', 'slope failure', 'debris flow', 'ground slip'
+    ],
+    'pandemic': [
+        'covid', 'pandemic', 'virus', 'disease', 'epidemic', 'outbreak',
+        'flu', 'infection', 'cases rising', 'quarantine', 'lockdown',
+        'hospitalized', 'vaccination', 'variant', 'health crisis'
+    ],
+    'tornado': [
+        'tornado', 'twister', 'funnel cloud', 'windstorm', 'whirlwind',
+        'rotating storm', 'debris vortex', 'tornado warning'
+    ],
+    'drought': [
+        'drought', 'dry spell', 'heatwave', 'famine', 'no rain', 'parched land',
+        'crop failure', 'water scarcity', 'drying rivers', 'low rainfall', 'barren land'
+    ],
+    'explosion': [
+        'explosion', 'blast', 'bomb', 'detonation', 'attack', 'exploded',
+        'chemical blast', 'gas leak', 'fireworks explosion', 'industrial blast',
+        'blast site', 'massive explosion', 'explosive material'
+    ]
 }
+
 DEFAULT_MAP_CENTER = (39.8283, -98.5795)
 
 # Sentiment Mapping
@@ -196,7 +232,7 @@ def run_prediction_pipeline(raw_tweet):
     else:
         try:
             query = results["location"] + ", India" if results["location"] == "Mumbai" else results["location"]
-            location = geolocator.geocode(query, timeout=5)
+            location = geolocator.geocode(query, timeout=15)
             if location:
                 lat_lon = (location.latitude, location.longitude)
         except Exception as e:
