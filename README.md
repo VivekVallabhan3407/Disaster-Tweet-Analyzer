@@ -14,9 +14,9 @@ The project provides an **interactive web dashboard** for visualization and insi
 2. **Disaster Classification** — Binary (Yes/No) per tweet  
 3. **Disaster Type Identification** — via Named Entity Recognition (NER)  
 4. **Location Extraction** — identifies places mentioned in tweets  
-5. **Purpose & Sentiment/Urgency Analysis**  
+5. **Purpose & Sentiment/Urgency Analysis**  - Purpose is classified into different catageories and shown. Sentiment of tweets is detected using roberta model and shown as three categories Neutral, Urgent or Positive.
 6. **Map-Based Visualization** — shows tweet distribution on a live map  
-7. **Deployment on Streamlit Cloud**
+7. **Deployment on Streamlit Cloud** - Project is deployed live on streamlit cloud.
 
 ---
 
