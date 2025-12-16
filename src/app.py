@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import folium
 from streamlit_folium import folium_static
+from dotenv import load_dotenv
 import os
 
 
@@ -21,7 +22,7 @@ DATA_PATH = 'Data/'
 # Load environment variables
 
 
-HF_USER = "Vivek1564"
+HF_USER = os.getenv("HF_USER_NAME")
 BIN_REPO_ID = f"{HF_USER}/disaster-tweet-binary-filter"
 MULTI_REPO_ID = f"{HF_USER}/disaster-tweet-multi-category-finetuned"
 
